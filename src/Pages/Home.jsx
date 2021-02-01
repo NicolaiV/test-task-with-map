@@ -12,7 +12,6 @@ import { useCallback } from 'react';
 import { TextField } from '@material-ui/core';
 import { useEffect } from 'react';
 import ItemsList from '../Components/ItemsList';
-import SearchIcon from '@material-ui/icons/Search';
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -51,22 +50,23 @@ export default function Home() {
   const classes = useStyles();
 
   const [list, setList] = useState([]);
-  const [filter, setFilter] = useState([]);
+  const [search, setSearch] = useState([]);
 
   const fetchList = useCallback(async () => {
-    if (!filter.length) {
+    if (!search.length) {
       return;
     }
+
     const res = await fetch(
       `https://nominatim.openstreetmap.org/search?q=${encodeURI(
-        filter
+        search
       )}&format=geojson`
     );
 
     const json = await res.json();
 
     setList(json?.features);
-  }, [setList, filter]);
+  }, [setList, search]);
 
   useEffect(() => {
     if (timeout) {
@@ -76,7 +76,7 @@ export default function Home() {
     timeout = setTimeout(() => {
       fetchList();
     }, 300);
-  }, [filter, fetchList]);
+  }, [search, fetchList]);
 
   const [current, setItem] = useState();
 
@@ -87,7 +87,7 @@ export default function Home() {
         <Toolbar>
           <MapIcon className={classes.icon} />
           <Typography variant="h6" color="inherit" noWrap>
-            Map with find
+            Карта с поиском
           </Typography>
         </Toolbar>
       </AppBar>
@@ -102,7 +102,7 @@ export default function Home() {
               color="textPrimary"
               gutterBottom
             >
-              Map
+              Карта
             </Typography>
             <Typography
               variant="h5"
@@ -111,15 +111,14 @@ export default function Home() {
               paragraph
             >
               Поиск по карте. Вы можете ввести искомый топоним в
-              строку поиска ниже, чтобы затем выбрать в списке и он
-              отобразился на карте.
+              строку поиска ниже, чтобы затем выбрать в списке.
             </Typography>
             <div className={classes.findInput}>
               <TextField
                 id="standard-basic"
                 label="Поиск"
-                value={filter}
-                onChange={(event) => setFilter(event.target.value)}
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
               />
             </div>
           </Container>

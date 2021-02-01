@@ -11,6 +11,7 @@ function ChangeView({ center, zoom }) {
   map.setView(center, zoom);
   return null;
 }
+
 const MapView = ({ currentItem }) => {
   const coordinates = currentItem?.geometry?.coordinates;
 
