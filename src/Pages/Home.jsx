@@ -9,9 +9,12 @@ import Container from '@material-ui/core/Container';
 import MapView from '../Components/MapView';
 import { useState } from 'react';
 import { useCallback } from 'react';
-import { TextField } from '@material-ui/core';
+import { IconButton, TextField } from '@material-ui/core';
 import { useEffect } from 'react';
 import ItemsList from '../Components/ItemsList';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import { useHistory } from 'react-router-dom';
+import { LOGIN } from '../constants/urls';
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -43,11 +46,26 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(6),
   },
+  toolbar: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+  toolbarStart: {
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
 }));
 let timeout = null;
 
+const logouth = (history) => {
+  localStorage.removeItem('authTocken');
+  history.push(LOGIN);
+};
+
 export default function Home() {
   const classes = useStyles();
+  const history = useHistory();
 
   const [list, setList] = useState([]);
   const [search, setSearch] = useState([]);
@@ -84,11 +102,19 @@ export default function Home() {
     <React.Fragment>
       <CssBaseline />
       <AppBar position="relative">
-        <Toolbar>
-          <MapIcon className={classes.icon} />
-          <Typography variant="h6" color="inherit" noWrap>
-            Карта с поиском
-          </Typography>
+        <Toolbar className={classes.toolbar}>
+          <div className={classes.toolbarStart}>
+            <MapIcon className={classes.icon} />
+            <Typography variant="h6" color="inherit" noWrap>
+              Карта с поиском
+            </Typography>
+          </div>
+          <IconButton
+            color="inherit"
+            onClick={() => logouth(history)}
+          >
+            <ExitToAppIcon />
+          </IconButton>
         </Toolbar>
       </AppBar>
       <main>
